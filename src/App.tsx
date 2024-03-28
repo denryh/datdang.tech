@@ -1,51 +1,51 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Screen from "./components/Screen";
 import MainSection from "./components/MainSection";
+import { useScreen } from "./hooks/useScreen";
 
-const messages = [
-  "Hi, I'm Henry Dang",
-  "I've been a software developer for around 2 years, and learned a lot.",
-  "I have been and always wanted to be a part of a team that create something useful, meaningful.",
-  "If you think we're on the same boat, then feel free to contact me.",
-];
+export default App;
 
-function App() {
-  const [activeScreen, setActiveScreen] = useState(0);
-  const introDone = activeScreen === messages.length;
+function App({ messages = [] }: { messages?: string[] }) {
   const timeoutRef = useRef<number>();
+  const { currentScreen, nextScreen, resetScreen } = useScreen();
+  const introDone = currentScreen >= messages.length;
 
   useEffect(() => {
-    if (activeScreen === messages.length) return;
+    if (!introDone) {
+      const wordCount = messages[currentScreen].split(" ").length;
 
-    timeoutRef.current = setTimeout(
-      () => {
-        setActiveScreen((prev) => prev + 1);
-      },
-      Math.min(messages[activeScreen].split(" ").length * 500, 3000),
-    );
+      timeoutRef.current = setTimeout(
+        nextScreen,
+        Math.min(wordCount * 500, 3000),
+      );
+    }
 
-    return () => clearTimeout(timeoutRef.current);
-  }, [activeScreen]);
+    return function cleanUp() {
+      clearTimeout(timeoutRef.current);
+    };
+  }, [currentScreen, messages, nextScreen, introDone]);
 
   return (
     <main className="relative h-screen p-2 text-center">
-      {messages.map((message, index) => (
-        <Screen
-          key={index}
-          active={activeScreen === index}
-          onClick={() => {
-            console.log("clicked");
-            clearTimeout(timeoutRef.current);
-            setActiveScreen((prev) => prev + 1);
-          }}
-        >
-          {message}
-        </Screen>
-      ))}
-
-      <MainSection active={introDone} onReplay={() => setActiveScreen(0)} />
+      {renderScreen()}
+      <MainSection active={introDone} onReplay={resetScreen} />
     </main>
   );
-}
 
-export default App;
+  function renderScreen() {
+    return messages.map(function toScreens(message, index) {
+      const isActive = currentScreen === index;
+
+      return (
+        <Screen key={index} active={isActive} onClick={onScreenClick}>
+          {message}
+        </Screen>
+      );
+
+      function onScreenClick() {
+        clearTimeout(timeoutRef.current);
+        nextScreen();
+      }
+    });
+  }
+}

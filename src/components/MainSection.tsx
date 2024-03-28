@@ -3,7 +3,28 @@ import GitHub from "./GitHub";
 import Resume from "./Resume";
 import Replay from "./Replay";
 
-export default function MainSection({
+export default MainSection;
+
+const links = [
+  {
+    href: "https://www.linkedin.com/in/dgthanhdat/",
+    label: "LinkedIn",
+    icon: <LinkedIn />,
+  },
+  {
+    href: "https://github.com/denryh",
+    label: "GitHub",
+    icon: <GitHub />,
+  },
+  {
+    href: "/datdang_swd_resume.pdf",
+    label: "Resume",
+    icon: <Resume />,
+    download: true,
+  },
+];
+
+function MainSection({
   active,
   onReplay,
 }: {
@@ -15,40 +36,9 @@ export default function MainSection({
       className={`absolute inset-0 z-10 grid place-items-center transition-all duration-1000 ${active ? "visible opacity-100" : "invisible opacity-0"}`}
     >
       <ul className="grid justify-items-center gap-4">
-        <li className="group cursor-pointer rounded-xl px-4 py-1">
-          <a
-            className="flex items-center justify-between space-x-1"
-            href="https://www.linkedin.com/in/dgthanhdat/"
-          >
-            <span className="font-medium transition-transform duration-500 group-hover:-translate-x-1 group-hover:-rotate-1">
-              LinkedIn
-            </span>
-            <LinkedIn className="transition-transform duration-500 group-hover:translate-x-1 group-hover:rotate-6" />
-          </a>
-        </li>
-        <li className="group cursor-pointer rounded-xl px-4 py-1">
-          <a
-            className="flex items-center justify-between space-x-1"
-            href="https://github.com/denryh"
-          >
-            <span className="font-medium transition-transform duration-500 group-hover:-translate-x-1 group-hover:-rotate-1">
-              GitHub
-            </span>
-            <GitHub className="transition-transform duration-500 group-hover:translate-x-1 group-hover:rotate-6" />
-          </a>
-        </li>
-        <li className="group cursor-pointer rounded-xl px-4 py-1">
-          <a
-            className="flex items-center justify-between space-x-1"
-            href="/datdang_swd_resume.pdf"
-            download="/datdang_swd_resume.pdf"
-          >
-            <span className="font-medium transition-transform duration-500 group-hover:-translate-x-1 group-hover:-rotate-1">
-              Resume
-            </span>
-            <Resume className="transition-transform duration-500 group-hover:translate-x-1 group-hover:rotate-6" />
-          </a>
-        </li>
+        {links.map(function toLink(link) {
+          return <LinkItem {...link} />;
+        })}
       </ul>
 
       <button
@@ -58,5 +48,36 @@ export default function MainSection({
         <Replay className="size-4 md:size-5" />
       </button>
     </section>
+  );
+}
+
+function LinkItem({
+  href,
+  label,
+  icon,
+  download,
+}: {
+  href: string;
+  label: React.ReactNode;
+  icon: React.ReactNode;
+  download?: boolean;
+}) {
+  const downloadName = download ? href.slice(href.lastIndexOf("/")) : undefined;
+
+  return (
+    <li className="group cursor-pointer rounded-xl px-4 py-1">
+      <a
+        className="flex items-center justify-between space-x-1"
+        href={href}
+        download={downloadName}
+      >
+        <span className="font-medium transition-transform duration-500 group-hover:-translate-x-1 group-hover:-rotate-1">
+          {label}
+        </span>
+        <span className="transition-transform duration-500 group-hover:translate-x-1 group-hover:rotate-6">
+          {icon}
+        </span>
+      </a>
+    </li>
   );
 }
