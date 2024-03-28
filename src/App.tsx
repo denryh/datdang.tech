@@ -32,6 +32,8 @@ function App({ messages = [] }: { messages?: string[] }) {
     </main>
   );
 
+  /* --- */
+
   function renderScreen() {
     return messages.map(function toScreens(message, index) {
       const isActive = currentScreen === index;

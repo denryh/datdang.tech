@@ -35,7 +35,7 @@ function MainSection({
     <section
       className={`absolute inset-0 z-10 grid place-items-center transition-all duration-1000 ${active ? "visible opacity-100" : "invisible opacity-0"}`}
     >
-      <ul className="grid justify-items-center gap-4">
+      <ul className="grid justify-items-center gap-8">
         {links.map(function toLink(link) {
           return <LinkItem {...link} />;
         })}
@@ -45,7 +45,7 @@ function MainSection({
         className="absolute bottom-10 rounded-full border border-white p-2 transition-colors duration-500 hover:bg-white hover:text-black sm:right-10"
         onClick={onReplay}
       >
-        <Replay className="size-4 md:size-5" />
+        <Replay className="size-4 md:size-8" />
       </button>
     </section>
   );
@@ -65,15 +65,16 @@ function LinkItem({
   const downloadName = download ? href.slice(href.lastIndexOf("/")) : undefined;
 
   return (
-    <li className="group cursor-pointer rounded-xl px-4 py-1">
+    <li className="group relative cursor-pointer overflow-x-hidden rounded-xl px-4 py-2">
       <a
-        className="flex items-center justify-between space-x-1"
+        className="flex items-center justify-between space-x-1 text-2xl"
         href={href}
         download={downloadName}
       >
         <span className="font-medium transition-transform duration-500 group-hover:-translate-x-1 group-hover:-rotate-1">
           {label}
         </span>
+
         <span className="transition-transform duration-500 group-hover:translate-x-1 group-hover:rotate-6">
           {icon}
         </span>
